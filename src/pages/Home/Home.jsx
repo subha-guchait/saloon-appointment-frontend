@@ -1,10 +1,14 @@
-import React from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import useServices from "../../hooks/useServices";
+import CreateServiceModal from "./CreateServiceModal";
+import { useAuthContext } from "../../context/AuthContext";
 
 const Home = () => {
-  const { services, loading } = useServices();
+  const { services, loading, fetchServices } = useServices();
+  const { authUser } = useAuthContext();
   const navigate = useNavigate();
+  const [showCreateModal, setShowCreateModal] = useState(false);
 
   const handleBookNow = (service) => {
     navigate("/book", { state: { selectedService: service } });
@@ -13,6 +17,18 @@ const Home = () => {
   return (
     <div className="max-w-4xl mx-auto p-4">
       <h1 className="text-3xl font-bold text-center mb-6">Our Services</h1>
+
+      {authUser?.role === "admin" && (
+        <div className="flex justify-end mb-4">
+          <button
+            className="btn btn-success"
+            onClick={() => setShowCreateModal(true)}
+          >
+            Add New Service
+          </button>
+        </div>
+      )}
+
       {loading ? (
         <div className="text-center text-lg">Loading services...</div>
       ) : (
@@ -36,6 +52,16 @@ const Home = () => {
             </div>
           ))}
         </div>
+      )}
+
+      {showCreateModal && (
+        <CreateServiceModal
+          onClose={() => setShowCreateModal(false)}
+          onCreated={() => {
+            setShowCreateModal(false);
+            fetchServices();
+          }}
+        />
       )}
     </div>
   );

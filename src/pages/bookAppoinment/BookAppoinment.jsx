@@ -30,7 +30,7 @@ const BookAppointment = () => {
     const result = await handleBookAppointment(appointmentData);
     if (result) {
       toast.success("Appointment booked successfully!");
-      navigate("/appoinments");
+      navigate("/appointments");
     }
   };
 

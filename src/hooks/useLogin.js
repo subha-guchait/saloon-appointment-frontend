@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import toast from "react-hot-toast";
-import axios from "axios";
 import { jwtDecode } from "jwt-decode";
 import { useAuthContext } from "../context/AuthContext";
 import { logIn } from "../api/authApi";
@@ -18,9 +17,9 @@ const useLogin = () => {
     try {
       const token = await logIn(email, password);
       localStorage.setItem("token", token);
+      const decoded = jwtDecode(token);
+      setAuthUser({ token, ...decoded });
       toast.success("Login successful");
-      //context
-      setAuthUser(token);
     } catch (err) {
       console.error(err);
       toast.error(err.message || "Something went wrong");

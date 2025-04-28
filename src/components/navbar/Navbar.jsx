@@ -14,13 +14,26 @@ const Navbar = () => {
       </div>
       <div className="flex-none">
         <ul className="menu menu-horizontal px-1 gap-1">
-          {authUser && (
+          {authUser?.role === "admin" && (
+            <>
+              <li>
+                <Link to="/staff">Staff</Link>
+              </li>
+              <li>
+                <Link to="/manage-appointments">Appointments</Link>
+              </li>
+            </>
+          )}
+          {authUser && authUser.role === "customer" && (
             <>
               <li>
                 <Link to="/book">Book Appointment</Link>
               </li>
               <li>
-                <Link to="/appointments">View Appointments</Link>
+                <Link to="/appointments">My Appointments</Link>
+              </li>
+              <li>
+                <Link to="/profile">Profile</Link>
               </li>
             </>
           )}
