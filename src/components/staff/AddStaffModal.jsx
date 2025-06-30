@@ -8,6 +8,7 @@ const AddStaffModal = ({ onClose, refreshStaff }) => {
     name: "",
     email: "",
     phone: "",
+    password: "",
     serviceId: "",
   });
   const [services, setServices] = useState([]);
@@ -83,6 +84,15 @@ const AddStaffModal = ({ onClose, refreshStaff }) => {
             placeholder="Phone"
             className="input input-bordered"
             value={formData.phone}
+            onChange={handleChange}
+            required
+          />
+          <input
+            type="password"
+            name="password"
+            placeholder="Password"
+            className="input input-bordered"
+            value={formData.password}
             onChange={handleChange}
             required
           />

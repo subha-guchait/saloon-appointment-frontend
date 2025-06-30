@@ -19,13 +19,69 @@ export const createStaff = async (staffData) => {
 };
 
 export const deleteStaff = async (staffId) => {
-  const res = await axios.delete(`${API_URL}/${staffId}`);
+  const res = await axios.delete(`${API_URL}/${staffId}`, {
+    headers: { Authorization: token },
+  });
   return res.data;
 };
 
 export const getStaffsByService = async (serviceId) => {
-  const res = await axios.get(`${API_URL}/service/${serviceId}`, {
-    headers: { Authorization: token },
-  });
-  return res.data.staffs;
+  try {
+    const res = await axios.get(`${API_URL}/service/${serviceId}`, {
+      headers: { Authorization: token },
+    });
+    return res.data.staffs;
+  } catch (err) {
+    throw new Error(err.response.data.message);
+  }
+};
+
+export const createSlot = async (slotData) => {
+  try {
+    const res = await axios.post(`${API_URL}/slots`, slotData, {
+      headers: { Authorization: token },
+    });
+    return res.data.slot;
+  } catch (err) {
+    console.error(err);
+    throw new Error(err.response.data.errMessage);
+  }
+};
+
+export const getStaffSlots = async () => {
+  try {
+    const res = await axios.get(`${API_URL}/slots`, {
+      headers: { Authorization: token },
+    });
+
+    return res.data.slots;
+  } catch (err) {
+    console.error(err);
+    throw new Error(err.response.data.message);
+  }
+};
+
+export const deleteSlot = async (slotId) => {
+  try {
+    const res = await axios.delete(`${API_URL}/slots/${slotId}`, {
+      headers: { Authorization: token },
+    });
+    return res.data.slot;
+  } catch (err) {
+    console.error(err);
+    throw new Error(err.response.data.message);
+  }
+};
+
+export const updateSlot = async (slotId, slotData) => {
+  try {
+    const res = await axios.put(`${API_URL}/slots/${slotId}`, slotData, {
+      headers: { Authorization: token },
+    });
+
+    return res.data.slot;
+  } catch (err) {
+    console.error(err);
+    throw new Error(err.response.data.message);
+  }
 };

@@ -12,13 +12,32 @@ import Footer from "./components/footer/Footer";
 import { useAuthContext } from "./context/AuthContext";
 import UserRoute from "./components/routes/userRoute";
 import AdminRoute from "./components/routes/adminRoute";
+import StaffRoute from "./components/routes/StaffRoute";
 import StaffPage from "./pages/staff/StaffPage";
+import ServiceManagement from "./pages/service/ServiceManagement";
 import ManageAppointmentsPage from "./pages/ManageAppointments/ManageAppointmentsPage";
+import VerifyPayment from "./pages/payment/VerifyPayment";
+import AvailabilityPage from "./pages/StaffPages/AvailabilityPage";
+import StaffAppointments from "./pages/StaffPages/StaffAppointment";
 
 const App = () => {
   const { authUser } = useAuthContext();
+  const getThemeForRole = (role) => {
+    switch (role) {
+      case "admin":
+        return "abyss";
+      case "staff":
+        return "lemonade";
+      case "customer":
+        return "corporate";
+      default:
+        return "light";
+    }
+  };
+
+  const theme = getThemeForRole(authUser?.role);
   return (
-    <div data-theme="corporate">
+    <div data-theme={theme}>
       <Navbar />
       <div>
         <Toaster />
@@ -27,7 +46,7 @@ const App = () => {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route
-            path="/book"
+            path="/book-appointment"
             element={
               <UserRoute>
                 <BookAppointment />
@@ -51,7 +70,15 @@ const App = () => {
             }
           />
           <Route
-            path="/staff"
+            path="/admin/manage-services"
+            element={
+              <AdminRoute>
+                <ServiceManagement />
+              </AdminRoute>
+            }
+          />
+          <Route
+            path="/admin/staff"
             element={
               <AdminRoute>
                 <StaffPage />
@@ -59,7 +86,7 @@ const App = () => {
             }
           />
           <Route
-            path="/manage-appointments"
+            path="/admin/appointments"
             element={
               <AdminRoute>
                 <ManageAppointmentsPage />
@@ -67,13 +94,42 @@ const App = () => {
             }
           />
           <Route
+            path="/staff/availability"
+            element={
+              <StaffRoute>
+                <AvailabilityPage />
+              </StaffRoute>
+            }
+          />
+          <Route
+            path="/staff/appointments"
+            element={
+              <StaffRoute>
+                <StaffAppointments />
+              </StaffRoute>
+            }
+          />
+          <Route
             path="/login"
-            element={authUser ? <Navigate to="/" /> : <Login />}
+            element={
+              authUser ? (
+                authUser.role === "admin" ? (
+                  <Navigate to="/admin/manage-services" />
+                ) : authUser.role === "staff" ? (
+                  <Navigate to="/staff/appointments" />
+                ) : (
+                  <Navigate to="/" />
+                )
+              ) : (
+                <Login />
+              )
+            }
           />
           <Route
             path="/signup"
             element={authUser ? <Navigate to="/" /> : <Signup />}
           />
+          <Route path="/verify-payment" element={<VerifyPayment />} />
         </Routes>
       </div>
       <Footer />

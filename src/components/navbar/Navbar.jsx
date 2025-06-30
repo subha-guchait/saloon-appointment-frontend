@@ -17,17 +17,30 @@ const Navbar = () => {
           {authUser?.role === "admin" && (
             <>
               <li>
-                <Link to="/staff">Staff</Link>
+                <Link to="/admin/manage-services">Services</Link>
               </li>
               <li>
-                <Link to="/manage-appointments">Appointments</Link>
+                <Link to="/admin/staff">Staff</Link>
+              </li>
+              <li>
+                <Link to="/admin/appointments">Appointments</Link>
+              </li>
+            </>
+          )}
+          {authUser?.role === "staff" && (
+            <>
+              <li>
+                <Link to="/staff/availability">Availability</Link>
+              </li>
+              <li>
+                <Link to="/staff/appointments">Appointment</Link>
               </li>
             </>
           )}
           {authUser && authUser.role === "customer" && (
             <>
               <li>
-                <Link to="/book">Book Appointment</Link>
+                <Link to="/book-appointment">Book Appointment</Link>
               </li>
               <li>
                 <Link to="/appointments">My Appointments</Link>

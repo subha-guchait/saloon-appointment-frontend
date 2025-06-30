@@ -2,6 +2,7 @@ import { useState } from "react";
 import toast from "react-hot-toast";
 import { useAuthContext } from "../context/AuthContext";
 import { signUp } from "../api/authApi";
+import { jwtDecode } from "jwt-decode";
 const useSignup = () => {
   const [loading, setLoading] = useState(false);
   const { setAuthUser } = useAuthContext();
@@ -24,8 +25,8 @@ const useSignup = () => {
       toast.success("Signup successful");
       localStorage.setItem("token", token);
 
-      //context
-      setAuthUser(token);
+      const decoded = jwtDecode(token);
+      setAuthUser({ token, ...decoded });
     } catch (err) {
       console.error(err);
       toast.error(err.message || "Something went wrong");

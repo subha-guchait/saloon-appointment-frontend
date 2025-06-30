@@ -1,68 +1,58 @@
-import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
 import useServices from "../../hooks/useServices";
-import CreateServiceModal from "./CreateServiceModal";
 import { useAuthContext } from "../../context/AuthContext";
 
 const Home = () => {
-  const { services, loading, fetchServices } = useServices();
-  const { authUser } = useAuthContext();
   const navigate = useNavigate();
-  const [showCreateModal, setShowCreateModal] = useState(false);
+  const { services } = useServices();
+  const { authUser } = useAuthContext();
 
-  const handleBookNow = (service) => {
-    navigate("/book", { state: { selectedService: service } });
+  const handleBookNow = () => {
+    navigate("/book-appointment");
   };
 
+  //redirect based on user role
+  useEffect(() => {
+    if (authUser) {
+      if (authUser.role === "admin") {
+        navigate("/admin/manage-services");
+      } else if (authUser.role === "staff") {
+        navigate("/staff/availability");
+      } else if (authUser.role === "customer") {
+        navigate("/book-appointment");
+      }
+    }
+  }, [authUser, navigate]);
+
   return (
-    <div className="max-w-4xl mx-auto p-4">
-      <h1 className="text-3xl font-bold text-center mb-6">Our Services</h1>
+    <div className="max-w-4xl mx-auto px-4 py-12">
+      <h1 className="text-4xl font-bold text-center mb-6">
+        Welcome to Stellar Beauty Hub
+      </h1>
+      <p className="text-center text-gray-600 mb-12">
+        We offer a wide range of beauty and grooming services to help you look
+        and feel your best.
+      </p>
 
-      {authUser?.role === "admin" && (
-        <div className="flex justify-end mb-4">
-          <button
-            className="btn btn-success"
-            onClick={() => setShowCreateModal(true)}
-          >
-            Add New Service
-          </button>
-        </div>
-      )}
+      <h2 className="text-2xl font-semibold mb-4 text-center">Our Services</h2>
+      <ul className="mb-12 space-y-4 text-lg text-gray-700 list-disc list-inside">
+        {services.map((service) => (
+          <li key={service.id}>
+            <span className="font-medium">{service.name}:</span>{" "}
+            {service.description}
+          </li>
+        ))}
+      </ul>
 
-      {loading ? (
-        <div className="text-center text-lg">Loading services...</div>
-      ) : (
-        <div className="grid md:grid-cols-2 gap-6">
-          {services.map((service) => (
-            <div key={service.id} className="card bg-base-100 shadow-md p-4">
-              <h2 className="text-xl font-semibold">{service.name}</h2>
-              <p className="text-sm text-gray-500 mb-2">
-                {service.description}
-              </p>
-              <p className="font-bold mb-1">
-                Duration: {service.duration} mins
-              </p>
-              <p className="font-bold mb-4">Price: ₹{service.price}</p>
-              <button
-                className="btn btn-primary"
-                onClick={() => handleBookNow(service)}
-              >
-                Book Appointment
-              </button>
-            </div>
-          ))}
-        </div>
-      )}
-
-      {showCreateModal && (
-        <CreateServiceModal
-          onClose={() => setShowCreateModal(false)}
-          onCreated={() => {
-            setShowCreateModal(false);
-            fetchServices();
-          }}
-        />
-      )}
+      <div className="flex justify-center">
+        <button
+          onClick={handleBookNow}
+          className="btn btn-outline btn-info px-6 py-3 rounded-full"
+        >
+          Book Appointment
+        </button>
+      </div>
     </div>
   );
 };

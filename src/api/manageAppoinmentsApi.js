@@ -3,11 +3,14 @@ import axios from "axios";
 const API_URL = `${import.meta.env.VITE_API_URL}/api/appoinments`;
 const token = localStorage.getItem("token");
 
-export const fetchScheduledAppointments = async () => {
-  const res = await axios.get(`${API_URL}/admin`, {
-    headers: { Authorization: token },
-  });
-  return res.data.appoinments;
+export const fetchAppointments = async (status, page, limit) => {
+  const res = await axios.get(
+    `${API_URL}/admin?status=${status}&page=${page}&limit=${limit}`,
+    {
+      headers: { Authorization: token },
+    }
+  );
+  return res.data;
 };
 
 export const assignStaffToAppointment = async (appointmentId, staffId) => {
@@ -22,12 +25,18 @@ export const assignStaffToAppointment = async (appointmentId, staffId) => {
 };
 
 export const completeAppointment = async (appointmentId) => {
-  const res = await axios.put(
-    `${API_URL}/complete/admin/${appointmentId}`,
-    { appointmentId },
-    {
-      headers: { Authorization: token },
-    }
-  );
-  return res.data.appoinment;
+  try {
+    const res = await axios.put(
+      `${API_URL}/complete/${appointmentId}`,
+      { appointmentId },
+      {
+        headers: { Authorization: token },
+      }
+    );
+    return res.data.appoinment;
+  } catch (err) {
+    throw new Error(
+      err.response.data.errMessage || "Failed to complete appointment"
+    );
+  }
 };

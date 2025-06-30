@@ -1,14 +1,27 @@
-import { useState } from "react";
-import { createService } from "../../api/serviceApi";
+import { useState, useEffect } from "react";
+import { createService, updateService } from "../../api/serviceApi";
 import toast from "react-hot-toast";
 
-const CreateServiceModal = ({ onClose, onCreated }) => {
+const CreateServiceModal = ({ onClose, onCreated, serviceToEdit = null }) => {
+  const isEdit = Boolean(serviceToEdit);
+
   const [formData, setFormData] = useState({
     name: "",
     description: "",
     duration: "",
     price: "",
   });
+
+  useEffect(() => {
+    if (isEdit && serviceToEdit) {
+      setFormData({
+        name: serviceToEdit.name,
+        description: serviceToEdit.description,
+        duration: serviceToEdit.duration,
+        price: serviceToEdit.price,
+      });
+    }
+  }, [serviceToEdit]);
 
   const handleChange = (e) => {
     setFormData((prev) => ({
@@ -19,7 +32,6 @@ const CreateServiceModal = ({ onClose, onCreated }) => {
 
   const validateForm = () => {
     const { name, description, duration, price } = formData;
-
     if (!name.trim() || !description.trim()) {
       toast.error("Name and description are required!");
       return false;
@@ -37,31 +49,38 @@ const CreateServiceModal = ({ onClose, onCreated }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    if (!validateForm()) {
-      return;
-    }
+    if (!validateForm()) return;
 
     try {
-      await createService({
-        name: formData.name.trim(),
-        description: formData.description.trim(),
-        duration: Number(formData.duration),
-        price: Number(formData.price),
-      });
-
-      toast.success("Service created successfully!");
-      onCreated();
+      let service;
+      if (isEdit) {
+        service = await updateService(serviceToEdit.id, {
+          ...formData,
+          duration: Number(formData.duration),
+          price: Number(formData.price),
+        });
+        toast.success("Service updated successfully!");
+      } else {
+        service = await createService({
+          name: formData.name.trim(),
+          description: formData.description.trim(),
+          duration: Number(formData.duration),
+          price: Number(formData.price),
+        });
+        toast.success("Service created successfully!");
+      }
+      onCreated(service);
     } catch (error) {
-      console.error("Failed to create service", error);
-      toast.error("Failed to create service. Please try again.");
+      toast.error("Something went wrong.");
     }
   };
 
   return (
     <div className="fixed inset-0 flex items-center justify-center backdrop-blur-sm bg-black/10 z-50">
       <div className="bg-white p-6 rounded-md w-96">
-        <h2 className="text-lg font-bold mb-4">Create New Service</h2>
+        <h2 className="text-lg font-bold mb-4">
+          {isEdit ? "Edit Service" : "Create New Service"}
+        </h2>
         <form onSubmit={handleSubmit} className="flex flex-col gap-3">
           <input
             type="text"
@@ -105,7 +124,7 @@ const CreateServiceModal = ({ onClose, onCreated }) => {
               Cancel
             </button>
             <button type="submit" className="btn btn-primary">
-              Create
+              {isEdit ? "Update" : "Create"}
             </button>
           </div>
         </form>
