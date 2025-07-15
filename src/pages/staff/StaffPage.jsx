@@ -10,7 +10,6 @@ const StaffPage = () => {
   const fetchStaffs = async () => {
     try {
       const res = await getAllStaff();
-      console.log(res.staffs);
       setStaffs(res.staffs);
     } catch (error) {
       console.error("Failed to fetch staffs", error);

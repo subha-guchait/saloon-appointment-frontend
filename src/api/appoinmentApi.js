@@ -1,17 +1,8 @@
-import axios from "axios";
-
-const API_URL = `${import.meta.env.VITE_API_URL}/api/appoinments/`;
-const token = localStorage.getItem("token");
+import api from "./axios";
 
 export const bookAppointment = async (slotId) => {
   try {
-    const res = await axios.post(
-      API_URL,
-      { slotId },
-      {
-        headers: { Authorization: token },
-      }
-    );
+    const res = await api.post("/appoinments", { slotId });
     return res.data.appoinment;
   } catch (err) {
     console.error(err);
@@ -21,7 +12,7 @@ export const bookAppointment = async (slotId) => {
 
 export const getUserAppointments = async () => {
   try {
-    const res = await axios.get(API_URL, { headers: { Authorization: token } });
+    const res = await api.get("/appoinments");
     return res.data.appoinments;
   } catch (err) {
     console.error(err);
@@ -31,13 +22,7 @@ export const getUserAppointments = async () => {
 
 export const cancelAppoionment = async (appoinmentId) => {
   try {
-    const res = await axios.put(
-      `${API_URL}cancel/${appoinmentId}`,
-      {},
-      {
-        headers: { Authorization: token },
-      }
-    );
+    const res = await api.put(`/appoinments/cancel/${appoinmentId}`, {});
 
     return res.data.appoinment;
   } catch (err) {
@@ -48,11 +33,12 @@ export const cancelAppoionment = async (appoinmentId) => {
 
 export const getStaffAppointments = async (status) => {
   try {
-    const res = await axios.get(`${API_URL}/staff?status=${status}`, {
-      headers: { Authorization: token },
-    });
+    const res = await api.get(`appoinments/staff?status=${status}`);
     return res.data.appoinments;
   } catch (err) {
-    throw new Error(err.response.data.errMessage);
+    console.log(err);
+    const message =
+      err?.response?.data?.message || err.message || "Something went wrong";
+    throw new Error(message);
   }
 };

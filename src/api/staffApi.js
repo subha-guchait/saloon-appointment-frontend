@@ -1,35 +1,26 @@
-import axios from "axios";
+import api from "./axios";
 
-const API_URL = `${import.meta.env.VITE_API_URL}/api/staffs`;
-const token = localStorage.getItem("token");
+const API_URL = `/staffs`;
 
 export const getAllStaff = async () => {
-  const res = await axios.get(`${API_URL}`, {
-    headers: { Authorization: token },
-  });
+  const res = await api.get(`${API_URL}`);
   return res.data;
 };
 
 export const createStaff = async (staffData) => {
-  const res = await axios.post(`${API_URL}`, staffData, {
-    headers: { Authorization: token },
-  });
+  const res = await api.post(`${API_URL}`, staffData);
   console.log(res.data);
   return res.data;
 };
 
 export const deleteStaff = async (staffId) => {
-  const res = await axios.delete(`${API_URL}/${staffId}`, {
-    headers: { Authorization: token },
-  });
+  const res = await api.delete(`${API_URL}/${staffId}`);
   return res.data;
 };
 
 export const getStaffsByService = async (serviceId) => {
   try {
-    const res = await axios.get(`${API_URL}/service/${serviceId}`, {
-      headers: { Authorization: token },
-    });
+    const res = await api.get(`${API_URL}/service/${serviceId}`);
     return res.data.staffs;
   } catch (err) {
     throw new Error(err.response.data.message);
@@ -38,9 +29,7 @@ export const getStaffsByService = async (serviceId) => {
 
 export const createSlot = async (slotData) => {
   try {
-    const res = await axios.post(`${API_URL}/slots`, slotData, {
-      headers: { Authorization: token },
-    });
+    const res = await api.post(`${API_URL}/slots`, slotData);
     return res.data.slot;
   } catch (err) {
     console.error(err);
@@ -50,9 +39,7 @@ export const createSlot = async (slotData) => {
 
 export const getStaffSlots = async () => {
   try {
-    const res = await axios.get(`${API_URL}/slots`, {
-      headers: { Authorization: token },
-    });
+    const res = await api.get(`${API_URL}/slots`);
 
     return res.data.slots;
   } catch (err) {
@@ -63,9 +50,7 @@ export const getStaffSlots = async () => {
 
 export const deleteSlot = async (slotId) => {
   try {
-    const res = await axios.delete(`${API_URL}/slots/${slotId}`, {
-      headers: { Authorization: token },
-    });
+    const res = await api.delete(`${API_URL}/slots/${slotId}`);
     return res.data.slot;
   } catch (err) {
     console.error(err);
@@ -75,9 +60,7 @@ export const deleteSlot = async (slotId) => {
 
 export const updateSlot = async (slotId, slotData) => {
   try {
-    const res = await axios.put(`${API_URL}/slots/${slotId}`, slotData, {
-      headers: { Authorization: token },
-    });
+    const res = await api.put(`${API_URL}/slots/${slotId}`, slotData);
 
     return res.data.slot;
   } catch (err) {

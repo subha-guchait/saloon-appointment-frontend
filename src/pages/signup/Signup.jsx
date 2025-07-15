@@ -1,10 +1,11 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import { useState } from "react";
+import { Eye, EyeOff } from "lucide-react";
 import useSignup from "../../hooks/useSignup";
 
 const Signup = () => {
   const [isAccepted, setIsAccepted] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   const [input, setInput] = useState({
     name: "",
@@ -41,6 +42,7 @@ const Signup = () => {
               onChange={(e) => setInput({ ...input, name: e.target.value })}
             />
           </div>
+
           <div>
             <label htmlFor="email" className="label p-2">
               <span className="text-base label-text">Email</span>
@@ -54,6 +56,7 @@ const Signup = () => {
               onChange={(e) => setInput({ ...input, email: e.target.value })}
             />
           </div>
+
           <div>
             <label htmlFor="phone" className="label p-2">
               <span className="text-base label-text">Phone No</span>
@@ -67,25 +70,40 @@ const Signup = () => {
               onChange={(e) => setInput({ ...input, phone: e.target.value })}
             />
           </div>
+
           <div>
             <label htmlFor="password" className="label p-2">
               <span className="text-base label-text">Password</span>
             </label>
-            <input
-              id="password"
-              type="password"
-              placeholder="Enter Password"
-              className="w-full input input-bordered h-10"
-              value={input.password}
-              onChange={(e) => setInput({ ...input, password: e.target.value })}
-            />
+            <div className="relative">
+              <input
+                id="password"
+                type={showPassword ? "text" : "password"}
+                placeholder="Enter Password"
+                className="w-full input input-bordered h-10 pr-10"
+                value={input.password}
+                onChange={(e) =>
+                  setInput({ ...input, password: e.target.value })
+                }
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 cursor-pointer"
+                tabIndex={-1}
+              >
+                {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+              </button>
+            </div>
           </div>
+
           <Link
             to="/login"
             className="text-sm hover:underline hover:text-blue-600 mt-2 inline-block pl-1"
           >
             Already have an account?
           </Link>
+
           <div className="m-2">
             <input
               type="checkbox"
@@ -96,7 +114,6 @@ const Signup = () => {
                 setInput({ ...input, isAccepted: e.target.checked });
               }}
             />
-
             <span className="p-2">
               I accept{" "}
               <a

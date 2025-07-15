@@ -19,6 +19,8 @@ import ManageAppointmentsPage from "./pages/ManageAppointments/ManageAppointment
 import VerifyPayment from "./pages/payment/VerifyPayment";
 import AvailabilityPage from "./pages/StaffPages/AvailabilityPage";
 import StaffAppointments from "./pages/StaffPages/StaffAppointment";
+import ForgotPassword from "./pages/passwordPages/ForgotPassword";
+import UpdatePassword from "./pages/passwordPages/UpdatePassword";
 
 const App = () => {
   const { authUser } = useAuthContext();
@@ -129,6 +131,8 @@ const App = () => {
             path="/signup"
             element={authUser ? <Navigate to="/" /> : <Signup />}
           />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route path="/update-password/:token" element={<UpdatePassword />} />
           <Route path="/verify-payment" element={<VerifyPayment />} />
         </Routes>
       </div>

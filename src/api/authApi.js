@@ -27,3 +27,30 @@ export const signUp = async (name, email, phone, password, isAccepted) => {
     throw new Error(err.response.data.message);
   }
 };
+
+export const resetPassword = async (email) => {
+  try {
+    const res = await axios.post(`${API_URL}/reset-password`, { email });
+    return res.data.message;
+  } catch (err) {
+    throw new Error(err.response.data.message);
+  }
+};
+export const verifyResetLink = async (token) => {
+  try {
+    const res = await axios.get(`${API_URL}/verify-reset-link/${token}`);
+    return res.data;
+  } catch (err) {
+    throw new Error(err.response.data.message);
+  }
+};
+export const updatePassword = async (token, password) => {
+  try {
+    const res = await axios.patch(`${API_URL}/update-password/${token}`, {
+      newPassword: password,
+    });
+    return res.data;
+  } catch (err) {
+    throw new Error(err.response.data.message);
+  }
+};
